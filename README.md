@@ -1,29 +1,29 @@
 # MaiN_Keyboard
 
-Eine Bildschirmtastatur für KDE Plasma / Wayland, die tatsächlich funktioniert.
+An on-screen keyboard for KDE Plasma / Wayland that actually works.
 
-## Warum MaiN_Keyboard?
+## Why MaiN_Keyboard?
 
-Bestehende Lösungen wie Onboard, Maliit oder CoreKeyboard haben unter Wayland massive Probleme:
-- Fokus wird vom Textfeld gestohlen
-- Tastenanschläge kommen nicht an
-- Komplizierte Konfiguration nötig
+Existing solutions like Onboard, Maliit or CoreKeyboard have major issues under Wayland:
+- Focus gets stolen from text fields
+- Keystrokes don't arrive
+- Complicated configuration required
 
-**MaiN_Keyboard löst diese Probleme** durch:
-- XWayland-Modus mit speziellen Window-Flags
-- Kernel-Level Tastatureingabe via uinput
-- Kein Fokus-Stealing - Textfelder bleiben aktiv
+**MaiN_Keyboard solves these problems** through:
+- XWayland mode with special window flags
+- Kernel-level keyboard input via uinput
+- No focus stealing - text fields stay active
 
 ## Features
 
-- **Funktioniert unter Wayland** - Verwendet uinput für zuverlässige Tastatureingabe
-- **Kein Fokus-Stealing** - Textfelder bleiben beim Tippen aktiv
-- **Deutsches QWERTZ-Layout** - Vollständig mit Umlauten (ä, ö, ü, ß)
-- **Skalierbar** - Drei Größen: S (100%), M (120%), B (160%)
-- **Monitor-Wechsel** - Aktives Fenster zwischen Monitoren verschieben
-- **System Tray** - Minimiert in die Taskleiste
-- **Einstellungen speichern** - Merkt sich die gewählte Größe
-- **Verschiebbar** - Fenster kann frei positioniert werden
+- **Works under Wayland** - Uses uinput for reliable keyboard input
+- **No focus stealing** - Text fields remain active while typing
+- **German QWERTZ layout** - Complete with umlauts (ä, ö, ü, ß)
+- **Scalable** - Three sizes: S (100%), M (120%), B (160%)
+- **Monitor switching** - Move active window between monitors
+- **System Tray** - Minimizes to taskbar
+- **Saves settings** - Remembers chosen size
+- **Movable** - Window can be freely positioned
 
 ## Screenshots
 
@@ -47,65 +47,65 @@ Bestehende Lösungen wie Onboard, Maliit oder CoreKeyboard haben unter Wayland m
 yay -S main-keyboard-git
 ```
 
-### Manuell
+### Manual Installation
 
-**Abhängigkeiten installieren:**
+**Install dependencies:**
 ```bash
 sudo pacman -S python-pyqt6 python-evdev
 ```
 
-**Repository klonen:**
+**Clone repository:**
 ```bash
 git clone https://github.com/cachyOSMaiN/maiN-keyboard.git
 cd main-keyboard
 ```
 
-**Installieren:**
+**Install:**
 ```bash
 sudo make install
 ```
 
-**Oder direkt ausführen:**
+**Or run directly:**
 ```bash
 python3 main.py
 ```
 
-### uinput Berechtigung
+### uinput Permission
 
-MaiN_Keyboard benötigt Zugriff auf `/dev/uinput`. Falls nötig:
+MaiN_Keyboard requires access to `/dev/uinput`. If needed:
 
 ```bash
-# Einmalig Berechtigung setzen
+# Set permission once
 sudo setfacl -m u:$USER:rw /dev/uinput
 
-# Oder permanent via udev-Regel
+# Or permanently via udev rule
 echo 'KERNEL=="uinput", MODE="0666"' | sudo tee /etc/udev/rules.d/99-uinput.rules
 sudo udevadm control --reload-rules
 sudo udevadm trigger
 ```
 
-## Bedienung
+## Usage
 
-| Aktion | Beschreibung |
-|--------|--------------|
-| **Titelleiste ziehen** | Fenster verschieben |
-| **S / M / B** | Größe ändern (Small/Medium/Big) |
-| **<- / ->** | Aktives Fenster zum anderen Monitor |
-| **✕** | In System Tray minimieren |
-| **Tray-Icon Linksklick** | Tastatur ein-/ausblenden |
-| **Tray-Icon Rechtsklick** | Menü (Beenden) |
+| Action | Description |
+|--------|-------------|
+| **Drag title bar** | Move window |
+| **S / M / B** | Change size (Small/Medium/Big) |
+| **<- / ->** | Move active window to other monitor |
+| **✕** | Minimize to system tray |
+| **Tray icon left-click** | Show/hide keyboard |
+| **Tray icon right-click** | Menu (Quit) |
 
-## Technische Details
+## Technical Details
 
 - **GUI:** PyQt6
-- **Eingabe:** python-evdev (uinput)
-- **Display:** XWayland (für Fokus-Handling)
+- **Input:** python-evdev (uinput)
+- **Display:** XWayland (for focus handling)
 - **Config:** `~/.config/osk/settings.json`
 
-## Lizenz
+## License
 
 MIT License
 
-## Autor
+## Author
 
 MaiN
