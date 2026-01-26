@@ -34,7 +34,8 @@ Existing solutions like Onboard, Maliit or CoreKeyboard have major issues under 
 ### Arch Linux / CachyOS / Manjaro (AUR)
 
 ```bash
-yay -S main-keyboard-git
+paru -S main-keyboard-git   # CachyOS
+yay -S main-keyboard-git    # Arch/Manjaro
 ```
 
 ### Manual Installation
