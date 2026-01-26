@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=MaiN_Keyboard
+Comment=On-screen keyboard for KDE/Wayland
+Exec=main-keyboard
+Icon=input-keyboard
+Terminal=false
+Type=Application
+Categories=Utility;Accessibility;
+Keywords=keyboard;tastatur;onscreen;virtuell;osk;
