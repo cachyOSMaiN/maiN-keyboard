@@ -8,6 +8,7 @@ Runs under XWayland for better focus handling.
 import sys
 import os
 import json
+import socket
 
 # Force XWayland mode for better focus handling
 os.environ['QT_QPA_PLATFORM'] = 'xcb'
@@ -243,7 +244,24 @@ class VirtualKeyboard(QWidget):
         super().hideEvent(event)
 
 
+def acquire_single_instance_lock():
+    """Acquire a lock to ensure only one instance runs. Returns socket or None."""
+    sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+    try:
+        # Abstract socket (Linux) - auto-released on process exit
+        sock.bind('\0main-keyboard-instance-lock')
+        return sock
+    except socket.error:
+        return None
+
+
 def main():
+    # Single instance check
+    lock_socket = acquire_single_instance_lock()
+    if lock_socket is None:
+        print("MaiN_Keyboard läuft bereits.")
+        sys.exit(0)
+
     app = QApplication(sys.argv)
     app.setApplicationName('MaiN_Keyboard')
     app.setStyle('Fusion')
