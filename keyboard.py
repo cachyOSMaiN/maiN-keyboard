@@ -40,7 +40,9 @@ class KeyButton(QPushButton):
     def update_label(self, shift_active: bool):
         """Update button label based on shift state."""
         if not self.is_modifier:
-            self.setText(self.shifted_label if shift_active else self.normal_label)
+            label = self.shifted_label if shift_active else self.normal_label
+            # Qt interprets single '&' as a mnemonic; escape it to '&&' to display literal text.
+            self.setText(label.replace("&", "&&"))
 
 
 class KeyboardWidget(QWidget):
