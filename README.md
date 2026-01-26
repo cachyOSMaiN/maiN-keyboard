@@ -4,7 +4,7 @@ An on-screen keyboard for KDE Plasma / Wayland that actually works.
 
 ## Why MaiN_Keyboard?
 
-Existing solutions like Onboard, Maliit or CoreKeyboard have major issues under Wayland:
+Many on-screen keyboards have issues under Wayland:
 - Focus gets stolen from text fields
 - Keystrokes don't arrive
 - Complicated configuration required
