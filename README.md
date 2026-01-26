@@ -38,6 +38,12 @@ paru -S main-keyboard-git   # CachyOS
 yay -S main-keyboard-git    # Arch/Manjaro
 ```
 
+> [!IMPORTANT]
+> After installation, add your user to the `input` group and then log out and back in:
+> ```bash
+> sudo usermod -aG input $USER
+> ```
+
 ### Manual Installation
 
 **Install dependencies:**
