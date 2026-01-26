@@ -25,19 +25,9 @@ Existing solutions like Onboard, Maliit or CoreKeyboard have major issues under 
 - **Saves settings** - Remembers chosen size
 - **Movable** - Window can be freely positioned
 
-## Screenshots
+## Screenshot
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│ MaiN_Keyboard          <- -> | S | M | B | ✕               │
-├─────────────────────────────────────────────────────────────┤
-│ ^ │ 1 │ 2 │ 3 │ 4 │ 5 │ 6 │ 7 │ 8 │ 9 │ 0 │ ß │ ´ │  ⌫   │
-│ Tab │ Q │ W │ E │ R │ T │ Z │ U │ I │ O │ P │ Ü │ + │  ↵  │
-│ Caps │ A │ S │ D │ F │ G │ H │ J │ K │ L │ Ö │ Ä │ #      │
-│  ⇧   │<│ Y │ X │ C │ V │ B │ N │ M │ , │ . │ - │    ⇧    │
-│ Ctrl │ Alt │         Space         │AltGr│ ← │ ↓ │ ↑ │ → │
-└─────────────────────────────────────────────────────────────┘
-```
+![MaiN_Keyboard](https://i.ibb.co/s9hzgJ2G/Bildschirmfoto-20260126-111041.png)
 
 ## Installation
 
