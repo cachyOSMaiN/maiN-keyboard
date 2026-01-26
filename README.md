@@ -56,7 +56,7 @@ sudo pacman -S python-pyqt6 python-evdev
 
 **Repository klonen:**
 ```bash
-git clone https://github.com/cachyOSMaiN/main-keyboard.git
+git clone https://github.com/cachyOSMaiN/maiN-keyboard.git
 cd main-keyboard
 ```
 

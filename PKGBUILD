@@ -4,7 +4,7 @@ pkgver=1.0.0
 pkgrel=1
 pkgdesc="On-screen keyboard for KDE/Wayland that actually works"
 arch=('any')
-url="https://github.com/cachyOSMaiN/main-keyboard"
+url="https://github.com/cachyOSMaiN/maiN-keyboard"
 license=('MIT')
 depends=('python' 'python-pyqt6' 'python-evdev')
 makedepends=('git')
@@ -15,12 +15,12 @@ source=("git+$url.git")
 sha256sums=('SKIP')
 
 pkgver() {
-    cd "$srcdir/main-keyboard"
+    cd "$srcdir/maiN-keyboard"
     printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
 }
 
 package() {
-    cd "$srcdir/main-keyboard"
+    cd "$srcdir/maiN-keyboard"
 
     # Install Python files
     install -Dm755 main.py "$pkgdir/usr/share/$pkgname/main.py"
