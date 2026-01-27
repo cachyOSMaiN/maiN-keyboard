@@ -7,3 +7,4 @@ build/
 *.pkg.tar.zst
 src/
 pkg/
+TODO.md

@@ -47,24 +47,24 @@ class TitleBar(QWidget):
 
     STYLE = """
         TitleBar {
-            background-color: #1e1e1e;
+            background-color: #131315;
             border-top-left-radius: 8px;
             border-top-right-radius: 8px;
         }
         QLabel {
-            color: #888888;
+            color: #8e8e93;
             font-size: 12px;
             padding-left: 8px;
         }
         QPushButton {
             background-color: transparent;
-            color: #888888;
+            color: #8e8e93;
             border: none;
             font-size: 16px;
             padding: 4px 12px;
         }
         QPushButton:hover {
-            background-color: #4a4a4a;
+            background-color: #3a3a3c;
             color: white;
         }
         QPushButton#close_btn:hover {
@@ -104,15 +104,28 @@ class TitleBar(QWidget):
         # Monitor switch buttons
         self.mon_left_btn = QPushButton("<-")
         self.mon_left_btn.setFixedSize(40, 32)
+        self.mon_left_btn.setStyleSheet("margin-right: -6px;")
         self.mon_left_btn.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         self.mon_left_btn.clicked.connect(lambda: self._on_move_monitor('left'))
         layout.addWidget(self.mon_left_btn)
 
+        # Window move icon
+        self.window_icon = QLabel("󰆍")
+        self.window_icon.setFixedWidth(24)
+        self.window_icon.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.window_icon.setStyleSheet("color: #8e8e93; font-size: 14px; padding: 0;")
+        layout.addWidget(self.window_icon)
+
         self.mon_right_btn = QPushButton("->")
         self.mon_right_btn.setFixedSize(40, 32)
+        self.mon_right_btn.setStyleSheet("margin-left: 0px;")
         self.mon_right_btn.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         self.mon_right_btn.clicked.connect(lambda: self._on_move_monitor('right'))
         layout.addWidget(self.mon_right_btn)
+
+        # Bring icon to front (above both buttons)
+        self.mon_left_btn.stackUnder(self.window_icon)
+        self.mon_right_btn.stackUnder(self.window_icon)
 
         # Separator
         sep = QWidget()
@@ -217,6 +230,7 @@ class VirtualKeyboard(QWidget):
         config = load_config()
         self._current_scale = config.get('scale', 1.0)
         self._current_layout = config.get('layout', 'de')
+        self._current_opacity = config.get('opacity', 1.0)
 
         # Main layout
         layout = QVBoxLayout(self)
@@ -236,7 +250,7 @@ class VirtualKeyboard(QWidget):
         self.title_bar.update_layout_button(self._current_layout)
 
         # Styling
-        self.setStyleSheet("background-color: #2d2d2d; border-radius: 8px;")
+        self.setStyleSheet("background-color: #131315; border-radius: 8px;")
 
         # Base dimensions
         self._base_width = 900
@@ -245,9 +259,11 @@ class VirtualKeyboard(QWidget):
         # Position at bottom and apply scale
         self._position_at_bottom()
         self.keyboard.set_scale(self._current_scale)
+        self.setWindowOpacity(self._current_opacity)
 
-        # Tray menu layout actions (will be set by main())
+        # Tray menu actions (will be set by main())
         self.layout_actions = {}
+        self.opacity_actions = {}
 
     def _on_layout_changed(self, layout_name: str):
         """Handle layout change from keyboard widget."""
@@ -277,7 +293,7 @@ class VirtualKeyboard(QWidget):
             width = min(int(self._base_width * self._current_scale), geo.width() - 40)
             height = int(self._base_height * self._current_scale)
             x = geo.x() + (geo.width() - width) // 2
-            y = geo.y() + geo.height() - height - 20
+            y = geo.y() + geo.height() - height - 58
             self.setGeometry(x, y, width, height)
 
     def set_scale(self, factor):
@@ -285,6 +301,18 @@ class VirtualKeyboard(QWidget):
         self._current_scale = factor
         self._position_at_bottom()
         self.keyboard.set_scale(factor)
+
+    def set_opacity(self, opacity: float):
+        """Set the window opacity and save to config."""
+        self._current_opacity = opacity
+        self.setWindowOpacity(opacity)
+        # Update tray menu checkmarks
+        for value, action in self.opacity_actions.items():
+            action.setChecked(value == opacity)
+        # Save setting
+        config = load_config()
+        config['opacity'] = opacity
+        save_config(config)
 
     def keyPressEvent(self, event):
         if event.key() == Qt.Key.Key_Escape:
@@ -335,11 +363,11 @@ def main():
     # Tray menu
     menu = QMenu()
 
-    show_action = QAction('Anzeigen', menu)
+    show_action = QAction('Show', menu)
     show_action.triggered.connect(window.show)
     menu.addAction(show_action)
 
-    hide_action = QAction('Verstecken', menu)
+    hide_action = QAction('Hide', menu)
     hide_action.triggered.connect(window.hide)
     menu.addAction(hide_action)
 
@@ -362,9 +390,34 @@ def main():
 
     menu.addMenu(layout_menu)
 
+    # Opacity submenu
+    opacity_menu = QMenu('Opacity', menu)
+    opacity_group = QActionGroup(opacity_menu)
+    opacity_group.setExclusive(True)
+
+    opacity_levels = [
+        (1.0, '100%'),
+        (0.9, '90%'),
+        (0.8, '80%'),
+        (0.7, '70%'),
+        (0.6, '60%'),
+        (0.5, '50%'),
+    ]
+
+    for opacity_value, opacity_name in opacity_levels:
+        action = QAction(opacity_name, opacity_menu)
+        action.setCheckable(True)
+        action.setChecked(opacity_value == window._current_opacity)
+        action.triggered.connect(lambda checked, ov=opacity_value: window.set_opacity(ov))
+        opacity_group.addAction(action)
+        opacity_menu.addAction(action)
+        window.opacity_actions[opacity_value] = action
+
+    menu.addMenu(opacity_menu)
+
     menu.addSeparator()
 
-    quit_action = QAction('Beenden', menu)
+    quit_action = QAction('Quit', menu)
     quit_action.triggered.connect(app.quit)
     menu.addAction(quit_action)
 

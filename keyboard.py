@@ -58,24 +58,28 @@ class KeyboardWidget(QWidget):
 
     BASE_STYLE = """
         KeyButton {
-            background-color: #3a3a3a;
+            background-color: #4a4a4c;
             color: #ffffff;
-            border: 1px solid #555555;
-            border-radius: 5px;
+            border: none;
+            border-bottom: 3px solid #2a2a2c;
+            border-radius: 8px;
             padding: 5px;
+            margin: 2px;
         }
         KeyButton:hover {
-            background-color: #4a4a4a;
+            background-color: #5a5a5c;
         }
         KeyButton:pressed {
-            background-color: #2a2a2a;
+            background-color: #3a3a3c;
+            border-bottom: 1px solid #2a2a2c;
+            margin-top: 4px;
         }
         KeyButton[active="true"] {
-            background-color: #5a7aa5;
-            border-color: #7a9ac5;
+            background-color: #6a8fba;
+            border-bottom: 3px solid #4a6f9a;
         }
         QWidget {
-            background-color: #2d2d2d;
+            background-color: #131315;
         }
     """
 

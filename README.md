@@ -18,12 +18,14 @@ Many on-screen keyboards have issues under Wayland:
 
 - **Works under Wayland** - Uses uinput for reliable keyboard input
 - **No focus stealing** - Text fields remain active while typing
+- **Dark design** - Modern iOS-style buttons with 3D shadow effect
+- **Adjustable opacity** - Set transparency (50%-100%) via tray menu
 - **Multiple layouts** - German (DE), English UK, English US
 - **Layout switching** - Button in title bar or via tray menu
 - **Scalable** - Three sizes: S (100%), M (120%), B (160%)
 - **Monitor switching** - Move active window between monitors
 - **System Tray** - Minimizes to taskbar
-- **Saves settings** - Remembers chosen size and layout
+- **Saves settings** - Remembers size, layout, and opacity
 - **Movable** - Window can be freely positioned
 
 ## Screenshot
