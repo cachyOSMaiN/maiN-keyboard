@@ -21,9 +21,9 @@ from PyQt6.QtWidgets import (
     QSystemTrayIcon, QMenu
 )
 from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QGuiApplication, QIcon, QAction
+from PyQt6.QtGui import QGuiApplication, QIcon, QAction, QActionGroup
 
-from keyboard import KeyboardWidget
+from keyboard import KeyboardWidget, AVAILABLE_LAYOUTS, LAYOUT_NAMES
 
 
 def load_config():
@@ -71,6 +71,11 @@ class TitleBar(QWidget):
             background-color: #c42b1c;
             border-top-right-radius: 8px;
         }
+        QPushButton#layout_btn {
+            font-size: 12px;
+            font-weight: bold;
+            padding: 4px 8px;
+        }
     """
 
     def __init__(self, parent=None):
@@ -114,6 +119,20 @@ class TitleBar(QWidget):
         sep.setFixedWidth(10)
         layout.addWidget(sep)
 
+        # Layout button
+        self.layout_btn = QPushButton("DE")
+        self.layout_btn.setObjectName("layout_btn")
+        self.layout_btn.setFixedSize(40, 32)
+        self.layout_btn.setFocusPolicy(Qt.FocusPolicy.NoFocus)
+        self.layout_btn.setToolTip("Tastaturlayout wechseln")
+        self.layout_btn.clicked.connect(self._on_layout_cycle)
+        layout.addWidget(self.layout_btn)
+
+        # Separator
+        sep2 = QWidget()
+        sep2.setFixedWidth(10)
+        layout.addWidget(sep2)
+
         # Scale buttons
         self.scale_s_btn = QPushButton("S")
         self.scale_s_btn.setFixedSize(40, 32)
@@ -140,6 +159,15 @@ class TitleBar(QWidget):
         self.close_btn.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         self.close_btn.clicked.connect(self._on_close)
         layout.addWidget(self.close_btn)
+
+    def update_layout_button(self, layout_name: str):
+        """Update the layout button text."""
+        self.layout_btn.setText(layout_name.upper())
+
+    def _on_layout_cycle(self):
+        """Cycle through available layouts."""
+        if self.window_parent:
+            self.window_parent.cycle_layout()
 
     def _on_close(self):
         self.window_parent.hide()
@@ -185,6 +213,11 @@ class VirtualKeyboard(QWidget):
         self.setAttribute(Qt.WidgetAttribute.WA_X11DoNotAcceptFocus)
         self.setFocusPolicy(Qt.FocusPolicy.NoFocus)
 
+        # Load saved settings
+        config = load_config()
+        self._current_scale = config.get('scale', 1.0)
+        self._current_layout = config.get('layout', 'de')
+
         # Main layout
         layout = QVBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
@@ -194,9 +227,13 @@ class VirtualKeyboard(QWidget):
         self.title_bar = TitleBar(self)
         layout.addWidget(self.title_bar)
 
-        # Keyboard
-        self.keyboard = KeyboardWidget()
+        # Keyboard with saved layout
+        self.keyboard = KeyboardWidget(layout=self._current_layout)
+        self.keyboard.layout_changed.connect(self._on_layout_changed)
         layout.addWidget(self.keyboard)
+
+        # Update title bar button
+        self.title_bar.update_layout_button(self._current_layout)
 
         # Styling
         self.setStyleSheet("background-color: #2d2d2d; border-radius: 8px;")
@@ -205,13 +242,32 @@ class VirtualKeyboard(QWidget):
         self._base_width = 900
         self._base_height = 312
 
-        # Load saved scale
-        config = load_config()
-        self._current_scale = config.get('scale', 1.0)
-
         # Position at bottom and apply scale
         self._position_at_bottom()
         self.keyboard.set_scale(self._current_scale)
+
+        # Tray menu layout actions (will be set by main())
+        self.layout_actions = {}
+
+    def _on_layout_changed(self, layout_name: str):
+        """Handle layout change from keyboard widget."""
+        self._current_layout = layout_name
+        self.title_bar.update_layout_button(layout_name)
+
+        # Update tray menu checkmarks
+        for name, action in self.layout_actions.items():
+            action.setChecked(name == layout_name)
+
+    def cycle_layout(self):
+        """Cycle to the next layout."""
+        current_idx = AVAILABLE_LAYOUTS.index(self._current_layout)
+        next_idx = (current_idx + 1) % len(AVAILABLE_LAYOUTS)
+        new_layout = AVAILABLE_LAYOUTS[next_idx]
+        self.keyboard.set_layout(new_layout)
+
+    def set_layout(self, name: str):
+        """Set a specific layout."""
+        self.keyboard.set_layout(name)
 
     def _position_at_bottom(self):
         """Position the keyboard at the bottom center of the screen."""
@@ -240,6 +296,7 @@ class VirtualKeyboard(QWidget):
         """Save settings when hiding."""
         config = load_config()
         config['scale'] = self._current_scale
+        config['layout'] = self._current_layout
         save_config(config)
         super().hideEvent(event)
 
@@ -285,6 +342,25 @@ def main():
     hide_action = QAction('Verstecken', menu)
     hide_action.triggered.connect(window.hide)
     menu.addAction(hide_action)
+
+    menu.addSeparator()
+
+    # Layout submenu
+    layout_menu = QMenu('Layout', menu)
+    layout_group = QActionGroup(layout_menu)
+    layout_group.setExclusive(True)
+
+    for layout_id in AVAILABLE_LAYOUTS:
+        layout_name = LAYOUT_NAMES.get(layout_id, layout_id.upper())
+        action = QAction(layout_name, layout_menu)
+        action.setCheckable(True)
+        action.setChecked(layout_id == window._current_layout)
+        action.triggered.connect(lambda checked, lid=layout_id: window.set_layout(lid))
+        layout_group.addAction(action)
+        layout_menu.addAction(action)
+        window.layout_actions[layout_id] = action
+
+    menu.addMenu(layout_menu)
 
     menu.addSeparator()
 
