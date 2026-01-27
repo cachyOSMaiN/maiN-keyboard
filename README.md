@@ -18,11 +18,12 @@ Many on-screen keyboards have issues under Wayland:
 
 - **Works under Wayland** - Uses uinput for reliable keyboard input
 - **No focus stealing** - Text fields remain active while typing
-- **German QWERTZ layout** - Complete with umlauts (ä, ö, ü, ß)
+- **Multiple layouts** - German (DE), English UK, English US
+- **Layout switching** - Button in title bar or via tray menu
 - **Scalable** - Three sizes: S (100%), M (120%), B (160%)
 - **Monitor switching** - Move active window between monitors
 - **System Tray** - Minimizes to taskbar
-- **Saves settings** - Remembers chosen size
+- **Saves settings** - Remembers chosen size and layout
 - **Movable** - Window can be freely positioned
 
 ## Screenshot
@@ -86,11 +87,12 @@ sudo udevadm trigger
 | Action | Description |
 |--------|-------------|
 | **Drag title bar** | Move window |
+| **DE / UK / US** | Switch keyboard layout |
 | **S / M / B** | Change size (Small/Medium/Big) |
 | **<- / ->** | Move active window to other monitor |
 | **✕** | Minimize to system tray |
 | **Tray icon left-click** | Show/hide keyboard |
-| **Tray icon right-click** | Menu (Quit) |
+| **Tray icon right-click** | Menu with layout selection |
 
 ## Technical Details
 
