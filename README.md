@@ -30,7 +30,7 @@ Many on-screen keyboards have issues under Wayland:
 
 ## Screenshot
 
-![MaiN_Keyboard](https://i.ibb.co/s9hzgJ2G/Bildschirmfoto-20260126-111041.png)
+![MaiN_Keyboard](https://i.ibb.co/RTxm3ypq/Bildschirmfoto-20260127-034035.png)
 
 ## Installation
 
