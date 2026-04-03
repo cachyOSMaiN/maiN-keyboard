@@ -31,7 +31,7 @@ LAYOUT = [
         ('e', 'E', ecodes.KEY_E),
         ('r', 'R', ecodes.KEY_R),
         ('t', 'T', ecodes.KEY_T),
-        ('z', 'Z', ecodes.KEY_Z),
+        ('z', 'Z', ecodes.KEY_Y),
         ('u', 'U', ecodes.KEY_U),
         ('i', 'I', ecodes.KEY_I),
         ('o', 'O', ecodes.KEY_O),
@@ -60,7 +60,7 @@ LAYOUT = [
     [
         ('⇧', '⇧', ecodes.KEY_LEFTSHIFT),
         ('<', '>', ecodes.KEY_102ND),
-        ('y', 'Y', ecodes.KEY_Y),
+        ('y', 'Y', ecodes.KEY_Z),
         ('x', 'X', ecodes.KEY_X),
         ('c', 'C', ecodes.KEY_C),
         ('v', 'V', ecodes.KEY_V),
