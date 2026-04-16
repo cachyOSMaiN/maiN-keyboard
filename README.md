@@ -110,3 +110,7 @@ MIT License
 ## Author
 
 MaiN
+
+---
+
+**Keywords:** on-screen keyboard Linux, virtual keyboard KDE Plasma, Wayland on-screen keyboard, OSK Wayland, touchscreen keyboard Linux, software keyboard KDE, on-screen keyboard Python, uinput keyboard Linux, XWayland keyboard, on-screen keyboard Arch Linux, on-screen keyboard CachyOS, on-screen keyboard Manjaro, virtual keyboard Wayland focus, accessibility keyboard KDE
