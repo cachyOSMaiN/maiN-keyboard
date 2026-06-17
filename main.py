@@ -9,6 +9,7 @@ import sys
 import os
 import json
 import socket
+import signal
 
 # Force XWayland mode for better focus handling
 os.environ['QT_QPA_PLATFORM'] = 'xcb'
@@ -20,7 +21,7 @@ from PyQt6.QtWidgets import (
     QVBoxLayout, QLabel, QPushButton,
     QSystemTrayIcon, QMenu
 )
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, QSocketNotifier, QTimer
 from PyQt6.QtGui import QGuiApplication, QIcon, QAction, QActionGroup
 
 from keyboard import KeyboardWidget, AVAILABLE_LAYOUTS, LAYOUT_NAMES
@@ -329,22 +330,41 @@ class VirtualKeyboard(QWidget):
         super().hideEvent(event)
 
 
+LOCK_SOCKET_NAME = '\0main-keyboard-instance-lock'
+
+
 def acquire_single_instance_lock():
     """Acquire a lock to ensure only one instance runs. Returns socket or None."""
     sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
     try:
         # Abstract socket (Linux) - auto-released on process exit
-        sock.bind('\0main-keyboard-instance-lock')
+        sock.bind(LOCK_SOCKET_NAME)
+        sock.listen(1)
         return sock
     except socket.error:
         return None
 
 
+def signal_running_instance():
+    """Ask the already-running instance to toggle visibility. Returns True on success."""
+    try:
+        client = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+        client.connect(LOCK_SOCKET_NAME)
+        client.sendall(b'toggle')
+        client.close()
+        return True
+    except socket.error:
+        return False
+
+
 def main():
-    # Single instance check
+    # Single instance check - if already running, toggle the existing instance
     lock_socket = acquire_single_instance_lock()
     if lock_socket is None:
-        print("MaiN_Keyboard läuft bereits.")
+        if signal_running_instance():
+            print("MaiN_Keyboard is already running - toggled.")
+        else:
+            print("MaiN_Keyboard is already running.")
         sys.exit(0)
 
     app = QApplication(sys.argv)
@@ -354,6 +374,21 @@ def main():
 
     window = VirtualKeyboard()
     window.show()
+
+    # Listen for re-invocations on the lock socket and toggle visibility
+    def _on_instance_signal():
+        try:
+            conn, _ = lock_socket.accept()
+            conn.recv(64)
+            conn.close()
+        except socket.error:
+            return
+        window.setVisible(not window.isVisible())
+
+    instance_notifier = QSocketNotifier(
+        lock_socket.fileno(), QSocketNotifier.Type.Read
+    )
+    instance_notifier.activated.connect(_on_instance_signal)
 
     # System tray icon
     tray = QSystemTrayIcon()
@@ -424,6 +459,19 @@ def main():
     tray.setContextMenu(menu)
     tray.activated.connect(lambda reason: window.setVisible(not window.isVisible()) if reason == QSystemTrayIcon.ActivationReason.Trigger else None)
     tray.show()
+
+    # Handle Ctrl+C (SIGINT) gracefully
+    def _on_sigint(*_args):
+        print("\nMaiN_Keyboard is shutting down.")
+        app.quit()
+
+    signal.signal(signal.SIGINT, _on_sigint)
+
+    # Qt's C++ event loop blocks Python signal handling; this timer periodically
+    # returns control to the interpreter so the SIGINT handler can run.
+    sigint_timer = QTimer()
+    sigint_timer.start(200)
+    sigint_timer.timeout.connect(lambda: None)
 
     sys.exit(app.exec())
 
