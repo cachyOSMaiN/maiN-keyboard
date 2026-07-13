@@ -1,7 +1,7 @@
 # Maintainer: MaiN
 pkgname=main-keyboard-git
 pkgver=1.0.0
-pkgrel=1
+pkgrel=2
 pkgdesc="On-screen keyboard for KDE/Wayland that actually works"
 arch=('any')
 url="https://github.com/cachyOSMaiN/maiN-keyboard"
@@ -28,6 +28,8 @@ package() {
     install -Dm644 input_emitter.py "$pkgdir/usr/share/$pkgname/input_emitter.py"
     install -Dm644 layouts/__init__.py "$pkgdir/usr/share/$pkgname/layouts/__init__.py"
     install -Dm644 layouts/de.py "$pkgdir/usr/share/$pkgname/layouts/de.py"
+    install -Dm644 layouts/uk.py "$pkgdir/usr/share/$pkgname/layouts/uk.py"
+    install -Dm644 layouts/us.py "$pkgdir/usr/share/$pkgname/layouts/us.py"
 
     # Install launcher script
     install -Dm755 /dev/stdin "$pkgdir/usr/bin/main-keyboard" << EOF
