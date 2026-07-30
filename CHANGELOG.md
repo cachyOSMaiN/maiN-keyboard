@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Added
+- **Toggle on re-invocation**: Launching MaiN_Keyboard while it's already running now toggles the existing instance's visibility (show/hide) instead of just exiting — ideal for binding the launch command to a hotkey. Implemented via the abstract Unix socket lock with a `QSocketNotifier`.
+- **Graceful Ctrl+C handling**: Pressing Ctrl+C in the terminal now shuts the app down cleanly (settings are saved on exit).
+
 ## v1.2.0 (2026-01-27)
 
 ### Added
