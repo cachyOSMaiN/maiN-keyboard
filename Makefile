@@ -15,10 +15,9 @@ install:
 	install -Dm644 layouts/us.py $(DESTDIR)$(PREFIX)/share/$(PKGNAME)/layouts/us.py
 
 	# Install launcher script
-	install -Dm755 /dev/stdin $(DESTDIR)$(PREFIX)/bin/$(PKGNAME) << 'EOF'
-#!/bin/bash
-cd $(PREFIX)/share/$(PKGNAME) && python3 main.py "$$@"
-EOF
+	install -d $(DESTDIR)$(PREFIX)/bin
+	printf '#!/bin/bash\ncd $(PREFIX)/share/$(PKGNAME) && exec python3 main.py "$$@"\n' > $(DESTDIR)$(PREFIX)/bin/$(PKGNAME)
+	chmod 755 $(DESTDIR)$(PREFIX)/bin/$(PKGNAME)
 
 	# Install desktop entry
 	install -Dm644 main-keyboard.desktop $(DESTDIR)$(PREFIX)/share/applications/$(PKGNAME).desktop

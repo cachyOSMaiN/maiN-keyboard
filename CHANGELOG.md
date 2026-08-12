@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+### Fixed
+- **`make install` no longer fails**: The `install` target built the `/usr/bin/main-keyboard` launcher with a shell heredoc, which is invalid in a Makefile (recipe lines need tabs, and each line runs in its own shell — so the heredoc body was never seen). This caused `*** missing separator. Stop.`. The launcher is now written with a single-line `printf` (and `exec`s `python3` so no bash parent lingers).
+
 ## v1.2.0 (2026-01-27)
 
 ### Added
